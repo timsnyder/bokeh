@@ -1,0 +1,56 @@
+channels:
+    - bokeh
+    - javascript
+    - defaults
+dependencies:
+    - beautiful-soup
+    # bokeh
+    - boto
+    - colorama
+    - coverage
+    - distribute
+    # docs
+    # examples
+    - flake8
+    - flask
+    - flexx
+    - futures-compat
+    - ggplot
+    - graphviz
+    - gulp
+    - icalendar
+    - jinja2
+    # jinja2 installed by bokeh
+    - jupyter
+    - matplotlib
+    # meta-package installs futures for py 2.7 but not for py 3.x
+    - mock
+    - networkx
+    - nodejs >=4.1
+    - numpy
+    - pandas
+    - pdiff
+    - phantomjs
+    - pillow
+    - pygments
+    - pytest >=2.9.0
+    - pytest-cov ==1.8.1
+    - pytest-rerunfailures
+    - pytest-selenium >=1.2.1
+    - pytest-xdist
+    - python =3.4
+    - python-dateutil
+    - pyyaml
+    # pyyaml installed by bokeh
+    - requests
+    - scikit-learn
+    - scipy
+    - seaborn
+    # server
+    - setuptools
+    - six
+    - sphinx >=1.3.1
+    - sympy
+    # tests
+    - tornado >=4.3
+    - yaml
