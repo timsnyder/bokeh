@@ -31,6 +31,7 @@ except ImportError:
 def base_version():
     import re
     VERSION_PAT = re.compile(r"^(\d+\.\d+\.\d+)((?:dev|rc).*)?")
+    print 'in base_version() __version__="{}"'.format(__version__)
     return VERSION_PAT.search(__version__).group(1)
 
 __base_version__ = base_version()
