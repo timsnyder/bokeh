@@ -36,7 +36,14 @@ do
     esac
 done
 
-# TODO: check if env exists
+function conda_env_does_not_exist {
+    if conda env list | grep "^$1" >/dev/null 2>&1; then
+        return 1
+    else
+        return 0
+    fi
+}
+
 
 function get_value {
     echo $(cat <<EOF | python -
@@ -48,7 +55,14 @@ EOF
 
 function conda_install {
     channels=$(echo $(get_value 'extra/channels') | sed -e 's/^\| \+/ -c /g')
-    conda install -n $env $channels --yes $@
+    subcmd=install
+    if conda_env_does_not_exist "$env"; then
+        # TODO create a complete env.yaml and create at once
+        #      so that we reduce risk of conflicting deps between
+        #      different "sections" of the dependencies
+        subcmd=create
+    fi
+    conda $subcmd -n $env $channels --yes "$@"
 }
 
 if [ "$build" == "true" ]; then
