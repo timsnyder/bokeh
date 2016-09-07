@@ -45,10 +45,14 @@ function conda_env_does_not_exist {
 }
 
 
+# if CONDA_RECIPE happens to be set from env, use that path but otherwise use git
+# to introspect the toplevel and use conda.recipe directory at the toplevel of the repo
+export CONDA_RECIPE=${CONDA_RECIPE:-$(git rev-parse --show-toplevel)/conda.recipe}
 function get_value {
     echo $(cat <<EOF | python -
+import os
 from conda_build.metadata import MetaData
-print(" ".join([s.replace(" ", "") for s in MetaData("../conda.recipe").get_value("$1")]))
+print(" ".join([s.replace(" ", "") for s in MetaData(os.environ['CONDA_RECIPE']).get_value("$1")]))
 EOF
     )
 }
