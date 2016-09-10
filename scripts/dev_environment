@@ -76,6 +76,31 @@ function conda_install {
     conda $subcmd -n $env $channels --yes "$@"
 }
 
+function install_miniconda {
+    MINICONDA_VERSION=${MINICONDA_VERSION:=latest}
+    MINICONDA="Miniconda-$MINICONDA_VERSION-Linux-x86_64"
+    MINICONDA_URL="http://repo.continuum.io/miniconda/$MINICONDA.sh"
+
+    wget $MINICONDA_URL
+    bash $MINICONDA.sh "$@"
+    rm -rf $MINICONDA.sh
+}
+
+function conda_not_found_in_path {
+    if type conda >/dev/null 2>&1; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+
+if conda_not_found_in_path; then
+    echo "conda is not found in your path. Installing miniconda."
+    install_miniconda -p $HOME/miniconda
+    source $HOME/miniconda/bin/activate root
+fi
+
 if conda_build_is_not_installed; then
     # conda_install requires that conda-build is installed in whatever env you
     # are using to run this script.  If we just installed conda (or you don't have it)
