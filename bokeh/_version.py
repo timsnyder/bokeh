@@ -178,7 +178,7 @@ tag_prefix = ""
 parentdir_prefix = "Bokeh-"
 versionfile_source = "bokeh/_version.py"
 
-def get_versions(default={"version": "unknown", "full": ""}, verbose=False):
+def get_versions(default={"version": "unknown", "full": ""}, verbose=True):
     variables = { "refnames": git_refnames, "full": git_full }
     ver = versions_from_expanded_variables(variables, tag_prefix, verbose)
     if not ver:
