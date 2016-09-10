@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e #exit on non-zero exit codes
+set -o pipefail # don't let errors propagate down pipelines
+
 # CLI user interface
 if [ "$1" == "-h" ]; then
     usage="$(basename "$0") [-h] -- program to install all the bokeh dependencies
@@ -12,6 +15,7 @@ if [ "$1" == "-h" ]; then
         -r     install RUN dependencies, defauls to true
         -t     install TEST (and examples) dependencies, defauls to true
         -a     install ADDITIONAL image diff-related packages, defaults to false
+        -d     install DOC dependencies, defaults to false
     "
     echo "$usage"
     exit 0
@@ -22,10 +26,11 @@ env=bokeh
 build=true
 run=true
 test=true
+doc=false
 add=false
 
 # handling of arguments
-while getopts e:b:r:t:a option
+while getopts e:b:r:t:ad option
 do
     case "${option}" in
         e) env=${OPTARG};;
@@ -33,6 +38,7 @@ do
         r) run=${OPTARG};;
         t) test=${OPTARG};;
         a) add=true;;
+        d) doc=true;;
     esac
 done
 
@@ -122,6 +128,27 @@ fi
 if [ "$test" == "true" ]; then
     conda_install $(get_value "test/requires")
     echo "TEST (and examples) dependecies installed."
+fi
+
+if [[ "$doc" == "true" ]]; then
+    conda_install sphinx seaborn pyyaml ggplot
+    echo "Documentation dependecies installed."
+    echo
+    echo "If you wish to build only the docs, you should now ensure you have the"
+    echo "latest dev build of bokeh and the sample data by running:"
+    echo ""
+    echo "   source activate $env"
+    echo "   conda install -n $env -c bokeh/channel/dev bokeh && bokeh sampledata"
+    echo ""
+    echo "Then to build the docs, you must:"
+    echo ""
+    echo "   cd $(git rev-parse --show-toplevel)/sphinx"
+    echo "   make clean all"
+    echo ""
+    echo "After building, to serve and review your local docs:"
+    echo ""
+    echo "   cd $(git rev-parse --show-toplevel)/sphinx"
+    echo "   make serve"
 fi
 
 if [[ "$add" == "true" ]]; then
