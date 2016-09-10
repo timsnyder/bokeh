@@ -44,6 +44,13 @@ function conda_env_does_not_exist {
     fi
 }
 
+function conda_build_is_not_installed {
+    if python -c 'from conda_build.metadata import MetaData' >/dev/null 2>&1; then
+        return 1
+    else
+        return 0
+    fi
+}
 
 # if CONDA_RECIPE happens to be set from env, use that path but otherwise use git
 # to introspect the toplevel and use conda.recipe directory at the toplevel of the repo
@@ -68,6 +75,14 @@ function conda_install {
     fi
     conda $subcmd -n $env $channels --yes "$@"
 }
+
+if conda_build_is_not_installed; then
+    # conda_install requires that conda-build is installed in whatever env you
+    # are using to run this script.  If we just installed conda (or you don't have it)
+    # install it.
+    
+    conda install --yes conda-build
+fi
 
 if [ "$build" == "true" ]; then
     conda_install $(get_value "requirements/build")
