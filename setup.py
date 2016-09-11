@@ -562,7 +562,7 @@ REQUIRES = [
 if sys.version_info[:2] == (2, 7):
     REQUIRES.append('futures>=3.0.3')
 
-_version = versioneer.get_version()
+_version = versioneer.get_version(verbose=True)
 _cmdclass = versioneer.get_cmdclass()
 
 # Horrible hack: workaround to allow creation of bdist_wheel on pip installation
