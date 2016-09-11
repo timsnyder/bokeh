@@ -5,9 +5,46 @@ set -o pipefail # don't let errors propagate down pipelines
 
 # CLI user interface
 if [ "$1" == "-h" ]; then
-    usage="$(basename "$0") [-h] -- program to install all the bokeh dependencies
+    scriptname=$(basename "$0")
+    usage="$scriptname -- install all the bokeh dependencies
+    Usage:
+        $scriptname [OPTIONS].. -- [EXTRA_CONDA_ARGS]..
 
-    where:
+    EXTRA_CONDA_ARGS:
+        Posiitonal parameters passed after the option terminator '--' will
+        be passed through to every conda command used to create the new envionrment
+
+    Discription:
+        Introspect the conda.recipe/meta.yaml from the root of the repo and
+        then:
+            1. Ensure that conda is installed.
+
+               If conda is not found in PATH, the latest miniconda installer
+               will be downloaded and run.  Since this script is intended for
+               human users to run (as opposed to travis_install for CI), and
+               since these users may be using conda for the first time, the
+               script runs the miniconda installer in interactive mode
+
+            2. Ensure that conda-build is installed.
+
+               conda-build is an internal dependency of this script and must
+               be installed in the active conda environment
+
+            3.
+
+
+
+    Examples:
+        * Create a 'bokeh-py34' environment that uses Python 3.4
+
+              $scriptname -e bokeh-py34 -- python=3.4
+
+        * Create a doc-only environment called 'bokeh-docs'
+
+              $scriptname -d -b 0 -r 0 -t 0 -e bokeh-docs
+
+
+    Options:
         -h     show this help text
 
         -e     ENVIRONMENT were you want to install the dependencies, defaults to bokeh
@@ -41,6 +78,15 @@ do
         d) doc=true;;
     esac
 done
+
+
+EXTRA_CONDA_ARGS=()
+if [ "$OPTIND" -gt 1 ]; then
+    # shift the options off the front of $@
+    shift $(( $OPTIND - 1 ))
+    # remaining "$@" are extra positional arguments
+    EXTRA_CONDA_ARGS=("$@")
+fi
 
 function conda_env_does_not_exist {
     if conda env list | grep "^$1" >/dev/null 2>&1; then
@@ -79,7 +125,7 @@ function conda_install {
         #      different "sections" of the dependencies
         subcmd=create
     fi
-    conda $subcmd -n $env $channels --yes "$@"
+    ( set -x; conda $subcmd -n $env $channels --yes "$@" "${EXTRA_CONDA_ARGS[@]}" )
 }
 
 function install_miniconda {
@@ -112,7 +158,8 @@ if conda_build_is_not_installed; then
     # are using to run this script.  If we just installed conda (or you don't have it)
     # install it.
     
-    conda install --yes conda-build
+    echo "conda-build is not found in your path. Installing conda-build."
+    (set -x ; conda install -n root --yes conda-build )
 fi
 
 if [ "$build" == "true" ]; then
