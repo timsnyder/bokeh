@@ -136,10 +136,13 @@ class Property extends Backbone.Model
 
 simple_prop = (name, pred) ->
   class Prop extends Property
-    toString: () -> "#{name}(obj: #{@obj.id}, spec: #{JSON.stringify(@spec)})"
+    name: name
+    pred: pred
+
+    toString: () -> "#{@name}(obj: #{@get(obj).id}, spec: #{JSON.stringify(@spec)})"
     validate: (value) ->
-      if not pred(value)
-        throw new Error("#{name} property '#{@attr}' given invalid value: #{value}")
+      if not @pred(value)
+        throw new Error("#{@name} property '#{@attr}' given invalid value: #{value}")
 
 class Any extends simple_prop("Any", (x) -> true)
 
@@ -158,7 +161,9 @@ class Number extends simple_prop("Number", (x) -> _.isNumber(x) or _.isBoolean(x
 
 # TODO extend Number instead of copying it's predicate
 #class Percent extends Number("Percent", (x) -> 0 <= x <= 1.0)
-class Percent extends simple_prop("Number", (x) -> (_.isNumber(x) or _.isBoolean(x)) and (0 <= x <= 1.0) )
+class Percent extends Number
+  name: "Percent"
+  pred: (value) -> super(value) and (0 <= value <= 1)
 
 class String extends simple_prop("String", _.isString)
 
