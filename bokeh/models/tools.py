@@ -419,7 +419,7 @@ class ZoomInTool(Action):
         :height: 18pt
 
     """
-    # TODO ZoomInTool dimensions should probably be constrained to be the same as ZoomOutTool
+
     dimensions = List(Enum(Dimension), default=["width", "height"], help="""
     Which dimensions the zoom-in tool is constrained to act in. By
     default the zoom-in zoom tool will zoom in any dimension, but can be
