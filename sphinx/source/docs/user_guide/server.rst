@@ -123,7 +123,7 @@ organization), that can access data or other artifacts published by many
 different people (possibly with access controls). This sort of scenario *is*
 possible with the Bokeh server, but often involves integrating a Bokeh
 server with other web application frameworks. See a complete example at
-https://github.com/bokeh/bokeh-demos/tree/master/happiness
+:bokeh-tree:`examples/howto/server_embed/happiness/`
 
 .. _userguide_server_applications:
 
@@ -639,6 +639,7 @@ can be found in the examples directory:
 * :bokeh-tree:`examples/howto/server_embed/notebook_embed.ipynb`
 * :bokeh-tree:`examples/howto/server_embed/standalone_embed.py`
 * :bokeh-tree:`examples/howto/server_embed/tornado_embed.py`
+* :bokeh-tree:`examples/howto/server_embed/happiness/`
 
 .. _userguide_server_bokeh_client:
 
